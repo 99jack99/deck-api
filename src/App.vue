@@ -9,8 +9,8 @@ let deck_one = reactive({
   remaining: null,
 });
 
-let deck_id = ref(null);
-let remaining_cards = ref(null);
+/* let deck_id = ref(null);
+let remaining_cards = ref(null); */
 
 const deck = () => {
   axios
@@ -27,9 +27,9 @@ const deck = () => {
     });
 };
 
-/* const shuffle_cards = () => {
+const shuffle_cards = () => {
   axios
-    .get(`https://deckofcardsapi.com/api/deck/${deck_id}/shuffle/`)
+    .get(`${url}/api/deck/${deck_one.id}/shuffle/`)
 
     .then((res) => {
       console.log(res);
@@ -38,20 +38,21 @@ const deck = () => {
     .catch((res) => {
       console.log(res);
     });
-}; */
+};
 
-/* const draw_card = () => {
+const draw_card = () => {
   axios
-    .get(`https://deckofcardsapi.com/api/deck/${deck_id}/draw/?count=2`)
+    .get(`${url}/api/deck/${deck_one.id}/draw/?count=2`)
 
     .then((res) => {
       console.log(res);
+      deck_one.remaining = res.data.remaining;
     })
 
     .catch((res) => {
       console.log(res);
     });
-}; */
+};
 
 deck();
 </script>
@@ -61,8 +62,8 @@ deck();
     <div class="board__deck">
       <h1 class="board__deck__title">Mazo Primero</h1>
       <div class="board__deck__actions">
-        <button>barajar</button>
-        <button>Coger 1</button>
+        <button @click="shuffle_cards()">barajar</button>
+        <button @click="draw_card()">Coger 1</button>
       </div>
       <div class="board__deck__deck-img">IMAGEN</div>
       <div class="board__deck__stats">
