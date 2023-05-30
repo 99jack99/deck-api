@@ -9,6 +9,8 @@ let deck_one = reactive({
   remaining: null,
 });
 
+let cards_have = reactive([]);
+
 /* let deck_id = ref(null);
 let remaining_cards = ref(null); */
 
@@ -47,6 +49,9 @@ const draw_card = () => {
     .then((res) => {
       console.log(res);
       deck_one.remaining = res.data.remaining;
+      /* cards_have.push(res.data.cards); */
+      cards_have = res.data.cards;
+      console.log(cards_have);
     })
 
     .catch((res) => {
@@ -65,7 +70,7 @@ deck();
         <button @click="shuffle_cards()">barajar</button>
         <button @click="draw_card()">Coger 1</button>
       </div>
-      <div class="board__deck__deck-img">IMAGEN</div>
+      <img src="./assets/imgs/decky.png" class="board__deck__deck-img" />
       <div class="board__deck__stats">
         <div class="board__deck__stats__data-box">
           <p class="board__deck__stats__data-box__title">ID mazo:</p>
@@ -77,6 +82,12 @@ deck();
             {{ deck_one.remaining }}
           </p>
         </div>
+      </div>
+    </div>
+
+    <div class="board__player">
+      <div v-for="card in cards_have">
+        <img class="card-img" v-bind:src="card.image" alt="" />
       </div>
     </div>
   </div>
@@ -91,10 +102,11 @@ deck();
   color: white;
 
   display: flex;
+  flex-direction: column;
   align-items: center;
+  justify-content: center;
 
   &__deck {
-    background-color: lightblue;
     padding: 20px;
     display: flex;
     flex-direction: column;
@@ -102,7 +114,7 @@ deck();
     justify-content: center;
 
     &__title {
-      color: black;
+      color: white;
     }
 
     &__actions {
@@ -114,26 +126,27 @@ deck();
     }
 
     &__deck-img {
-      height: 50px;
-      width: 45px;
-      background-color: purple;
+      height: 200px;
+      width: 200px;
       margin-block: 10px;
     }
 
     &__stats {
+      margin-top: 20px;
       background-color: lightgreen;
-
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
+      border-radius: 10px;
 
       &__data-box {
-        padding-inline: 20px;
+        padding-inline: 10px;
         display: flex;
         align-items: center;
-        justify-content: center;
-        width: 100%;
+        justify-content: flex-start;
+
+        /*  width: 100%; */
 
         &__title {
           font-weight: bold;
@@ -144,6 +157,25 @@ deck();
           color: black;
         }
       }
+    }
+  }
+
+  &__player {
+    margin: 20px;
+    margin-top: 10%;
+    width: 100%;
+    height: 100px;
+    background-color: rosybrown;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    .card-img {
+      height: 200px;
+      width: 150px;
+      margin-inline: 10px;
     }
   }
 }
