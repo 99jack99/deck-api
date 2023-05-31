@@ -1,4 +1,64 @@
-<script setup></script>
+<script setup>
+import axios from "axios";
+import { ref, reactive } from "vue";
+
+const url = "https://deckofcardsapi.com";
+
+let golden_deck = reactive({
+  id: null,
+  remaining: null,
+});
+
+let tundra_deck = reactive({
+  id: null,
+  remaining: null,
+});
+
+const get_deck = (deck_var) => {
+  axios
+    .get(`${url}/api/deck/new/shuffle/?deck_count=1`)
+
+    .then((res) => {
+      console.log("deck", res);
+      deck_var.id = res.data.deck_id;
+      deck_var.remaining = res.data.remaining;
+    })
+
+    .catch((error) => {
+      console.log(error);
+    });
+};
+
+const shuffle_cards = (deck_id) => {
+  axios
+    .get(`${url}/api/deck/${deck_id}/shuffle/`)
+
+    .then((res) => {
+      console.log(res);
+    })
+
+    .catch((res) => {
+      console.log(res);
+    });
+};
+
+const draw_card = (deck_var, deck_id, cards_drawn) => {
+  axios
+    .get(`${url}/api/deck/${deck_id}/draw/?count=${cards_drawn}`)
+
+    .then((res) => {
+      console.log(res);
+      deck_var.remaining = res.data.remaining;
+    })
+
+    .catch((res) => {
+      console.log(res);
+    });
+};
+
+get_deck(golden_deck);
+get_deck(tundra_deck);
+</script>
 
 <template>
   <div class="board">
@@ -9,12 +69,21 @@
           <h1 class="board__top-mazes__deck-box__deck-data__title">
             Golden Deck
           </h1>
-          <p class="board__top-mazes__deck-box__deck-data__id">j1238193</p>
+          <p class="board__top-mazes__deck-box__deck-data__id">
+            {{ golden_deck.id }}
+          </p>
         </div>
 
         <div class="board__top-mazes__deck-box__actions">
-          <button class="btn-action"><span>Shuffle</span></button>
-          <button class="btn-action"><span>Draw 2</span></button>
+          <button class="btn-action" @click="shuffle_cards(golden_deck.id)">
+            <span>Shuffle</span>
+          </button>
+          <button
+            class="btn-action"
+            @click="draw_card(golden_deck, golden_deck.id, 1)"
+          >
+            <span>Draw 1</span>
+          </button>
         </div>
         <img
           class="board__top-mazes__deck-box__deck-img"
@@ -22,7 +91,9 @@
         />
         <div class="board__top-mazes__deck-box__stats">
           <label for="">Remaining Cards:</label>
-          <span class="board__top-mazes__deck-box__stats__number">56</span>
+          <span class="board__top-mazes__deck-box__stats__number">{{
+            golden_deck.remaining
+          }}</span>
         </div>
       </div>
       <!-- MAZO 2 -->
@@ -31,12 +102,21 @@
           <h1 class="board__top-mazes__deck-box__deck-data__title">
             Tundra Deck
           </h1>
-          <p class="board__top-mazes__deck-box__deck-data__id">j1238193</p>
+          <p class="board__top-mazes__deck-box__deck-data__id">
+            {{ tundra_deck.id }}
+          </p>
         </div>
 
         <div class="board__top-mazes__deck-box__actions">
-          <button class="btn-action"><span>Shuffle</span></button>
-          <button class="btn-action"><span>Draw 2</span></button>
+          <button class="btn-action" @click="shuffle_cards(tundra_deck.id)">
+            <span>Shuffle</span>
+          </button>
+          <button
+            class="btn-action"
+            @click="draw_card(tundra_deck, tundra_deck.id, 2)"
+          >
+            <span>Draw 2</span>
+          </button>
         </div>
         <img
           class="board__top-mazes__deck-box__deck-img"
@@ -44,7 +124,9 @@
         />
         <div class="board__top-mazes__deck-box__stats">
           <label for="">Remaining Cards:</label>
-          <span class="board__top-mazes__deck-box__stats__number">56</span>
+          <span class="board__top-mazes__deck-box__stats__number">{{
+            tundra_deck.remaining
+          }}</span>
         </div>
       </div>
     </div>
