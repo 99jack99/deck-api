@@ -14,6 +14,8 @@ let tundra_deck = reactive({
   remaining: null,
 });
 
+let owned_cards = ref([]);
+
 const get_deck = (deck_var) => {
   axios
     .get(`${url}/api/deck/new/shuffle/?deck_count=1`)
@@ -49,6 +51,8 @@ const draw_card = (deck_var, deck_id, cards_drawn) => {
     .then((res) => {
       console.log(res);
       deck_var.remaining = res.data.remaining;
+      owned_cards.value = res.data.cards;
+      console.log(owned_cards.value);
     })
 
     .catch((res) => {
@@ -131,7 +135,11 @@ get_deck(tundra_deck);
       </div>
     </div>
 
-    <div class="board__player-cards"></div>
+    <div class="board__player-cards">
+      <div class="cards" v-for="cards in owned_cards">
+        <img class="cards__img" v-bind:src="cards.image" alt="" />
+      </div>
+    </div>
   </div>
 </template>
 
@@ -270,10 +278,15 @@ get_deck(tundra_deck);
     align-items: center;
     justify-content: center;
 
-    .card-img {
-      height: 200px;
-      width: 150px;
-      margin-inline: 10px;
+    .cards {
+      &__img {
+        height: 200px;
+        margin-inline: 10px;
+
+        &:hover {
+          transform: scale(1.1);
+        }
+      }
     }
   }
 }
