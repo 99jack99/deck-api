@@ -2,10 +2,8 @@
 
 <template>
   <div class="header">
-    <router-link to="/" class="header__items" href="">BOARD 1</router-link>
-    <router-link to="/table2" class="header__items" href=""
-      >BOARD 2</router-link
-    >
+    <router-link to="/" class="header__items">BOARD nº 1</router-link>
+    <router-link to="/table2" class="header__items">BOARD nº 2</router-link>
   </div>
 </template>
 
@@ -14,32 +12,22 @@
 .header {
   height: 10vh;
   width: 100%;
-
-  background-color: $blue;
-
+  background-color: $black-shade;
   display: flex;
   align-items: center;
   justify-content: center;
-
-  color: black;
   font-weight: 500;
+  border-bottom: 2px solid $light-blue;
+  font-family: regular;
 
   &__items {
     margin-inline: 20px;
     text-decoration: none;
-    /* background-color: white;
-    padding: 7px 14px;
-    border-radius: 4px; */
-
     align-items: center;
     background-color: transparent;
-    color: #fff;
+    color: $light-blue;
     cursor: pointer;
     display: flex;
-    font-family: ui-sans-serif, system-ui, -apple-system, system-ui, "Segoe UI",
-      Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif,
-      "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol",
-      "Noto Color Emoji";
     font-size: 1rem;
     font-weight: 700;
     line-height: 1.5;
@@ -50,7 +38,7 @@
     padding: 1rem;
 
     &:before {
-      background-color: #fff;
+      background-color: $light-blue;
       content: "";
       display: inline-block;
       height: 1px;
@@ -58,8 +46,9 @@
       transition: all 0.42s cubic-bezier(0.25, 0.8, 0.25, 1);
       width: 0;
     }
+
     &:hover:before {
-      background-color: #fff;
+      background-color: $light-blue;
       width: 3rem;
     }
   }

@@ -1,12 +1,25 @@
-$main-color: #288F76;
-$secondary-color: #FFFAFF;
-$font-color: #303036;
+/* PRIMARIES */
+$primary-ocean-blue: #1B998B;
+$primary-rose: #DA4167;
+$primary-white: #F4F4F9;
 
-$dark-shade: #595758;
+/* SECUNDARIES */
 $light-blue: #B8DBD9;
-$white: #F4F4F9;
-
-$main-black: #0A0903;
 $cream: #F6D8AE;
-$rose: #DA4167;
-$blue: #1B998B;
+
+/* SHADES */
+$shade-lt: #353535;
+$black-shade: #0A0903;
+$black-shade-lgt: #0a0a0a;
+
+
+@font-face {
+    font-family: prisma;
+    src: url(../fonts/TiltPrism-Regular.ttf);
+}
+
+
+@font-face {
+    font-family: regular;
+    src: url(../fonts/TiltNeon-Regular.ttf);
+}
