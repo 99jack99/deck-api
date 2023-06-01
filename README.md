@@ -13,3 +13,11 @@ https://deckofcardsapi.com
 - Localstorage
 - etc..
 
+## Installation
+
+- Clone the repo
+- CD into the repo
+- npm install
+- npm run dev
+
+
