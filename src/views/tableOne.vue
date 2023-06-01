@@ -1,15 +1,7 @@
 <script setup>
 import axios from "axios";
-import { ref, reactive } from "vue";
-
+import { ref, reactive, onBeforeMount } from "vue";
 import { toast } from "vue3-toastify";
-
-/* const notify = () => {
-  toast("Wow so easy !", {
-    autoClose: 1000,
-    position: toast.POSITION.BOTTOM_RIGHT,
-  });
-}; */
 
 const url = "https://deckofcardsapi.com";
 
@@ -25,18 +17,40 @@ let tundra_deck = reactive({
 
 let owned_cards = ref([]);
 
-const get_deck = (deck_var) => {
+const get_golden_deck = () => {
   axios
     .get(`${url}/api/deck/new/shuffle/?deck_count=1`)
 
     .then((res) => {
-      /* console.log("deck", res); */
-      deck_var.id = res.data.deck_id;
-      deck_var.remaining = res.data.remaining;
+      golden_deck.id = res.data.deck_id;
+      golden_deck.remaining = res.data.remaining;
+
+      localStorage.setItem("golden_id", golden_deck.id);
+      localStorage.setItem("golden_remaining", golden_deck.remaining);
     })
 
     .catch((error) => {
-      toast.error("Ups, could not get Deck", {
+      toast.error("Ups, could not get Golden deck", {
+        position: toast.POSITION.BOTTOM_CENTER,
+      });
+      console.log(error);
+    });
+};
+
+const get_tundra_deck = () => {
+  axios
+    .get(`${url}/api/deck/new/shuffle/?deck_count=1`)
+
+    .then((res) => {
+      tundra_deck.id = res.data.deck_id;
+      tundra_deck.remaining = res.data.remaining;
+
+      localStorage.setItem("tundra_id", tundra_deck.id);
+      localStorage.setItem("tundra_remaining", tundra_deck.remaining);
+    })
+
+    .catch((error) => {
+      toast.error("Ups, could not get Tundra deck", {
         position: toast.POSITION.BOTTOM_CENTER,
       });
       console.log(error);
@@ -62,18 +76,22 @@ const shuffle_cards = (deck_id) => {
     });
 };
 
-const draw_card = (deck_var, deck_id, cards_drawn) => {
+const draw_card = (deck_var, storage_name, deck_id, cards_drawn) => {
   axios
     .get(`${url}/api/deck/${deck_id}/draw/?count=${cards_drawn}`)
 
     .then((res) => {
       console.log(res.data.cards);
       deck_var.remaining = res.data.remaining;
-
+      localStorage.setItem(`${storage_name}`, deck_var.remaining);
       let data = res.data.cards;
       if (owned_cards.value.length <= 9) {
         for (const cards of data) {
           owned_cards.value.push(cards);
+          localStorage.setItem(
+            "player_cards",
+            JSON.stringify(owned_cards.value)
+          );
         }
       } else {
         toast.error("Only 10 cards allowed!", {
@@ -87,8 +105,24 @@ const draw_card = (deck_var, deck_id, cards_drawn) => {
     });
 };
 
-get_deck(golden_deck);
-get_deck(tundra_deck);
+onBeforeMount(() => {
+  /* In case player had cads in hand */
+  if (localStorage.getItem("player_cards")) {
+    owned_cards = JSON.parse(localStorage.getItem("player_cards"));
+  }
+
+  /* In case we have data in our localstorage we display it */
+  if (localStorage.getItem("golden_id") && localStorage.getItem("tundra_id")) {
+    golden_deck.id = localStorage.getItem("golden_id");
+    golden_deck.remaining = localStorage.getItem("golden_remaining");
+    tundra_deck.id = localStorage.getItem("tundra_id");
+    tundra_deck.remaining = localStorage.getItem("tundra_remaining");
+  } else {
+    /* In case we dont, we make api calls */
+    get_golden_deck();
+    get_tundra_deck();
+  }
+});
 </script>
 
 <template>
@@ -111,7 +145,9 @@ get_deck(tundra_deck);
           </button>
           <button
             class="btn-action"
-            @click="draw_card(golden_deck, golden_deck.id, 1)"
+            @click="
+              draw_card(golden_deck, 'golden_remaining', golden_deck.id, 1)
+            "
           >
             <span>Draw 1</span>
           </button>
@@ -144,7 +180,9 @@ get_deck(tundra_deck);
           </button>
           <button
             class="btn-action"
-            @click="draw_card(tundra_deck, tundra_deck.id, 2)"
+            @click="
+              draw_card(tundra_deck, 'tundra_remaining', tundra_deck.id, 2)
+            "
           >
             <span>Draw 2</span>
           </button>
