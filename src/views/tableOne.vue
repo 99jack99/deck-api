@@ -2,6 +2,15 @@
 import axios from "axios";
 import { ref, reactive } from "vue";
 
+import { toast } from "vue3-toastify";
+
+/* const notify = () => {
+  toast("Wow so easy !", {
+    autoClose: 1000,
+    position: toast.POSITION.BOTTOM_RIGHT,
+  });
+}; */
+
 const url = "https://deckofcardsapi.com";
 
 let golden_deck = reactive({
@@ -21,12 +30,15 @@ const get_deck = (deck_var) => {
     .get(`${url}/api/deck/new/shuffle/?deck_count=1`)
 
     .then((res) => {
-      console.log("deck", res);
+      /* console.log("deck", res); */
       deck_var.id = res.data.deck_id;
       deck_var.remaining = res.data.remaining;
     })
 
     .catch((error) => {
+      toast.error("Ups, could not get Deck", {
+        position: toast.POSITION.BOTTOM_CENTER,
+      });
       console.log(error);
     });
 };
@@ -36,10 +48,16 @@ const shuffle_cards = (deck_id) => {
     .get(`${url}/api/deck/${deck_id}/shuffle/`)
 
     .then((res) => {
+      toast.success("Cards have been shuffled", {
+        position: toast.POSITION.BOTTOM_CENTER,
+      });
       console.log(res);
     })
 
     .catch((res) => {
+      toast.error("Ups, there was a problem shuffling the deck", {
+        position: toast.POSITION.BOTTOM_CENTER,
+      });
       console.log(res);
     });
 };
@@ -49,10 +67,19 @@ const draw_card = (deck_var, deck_id, cards_drawn) => {
     .get(`${url}/api/deck/${deck_id}/draw/?count=${cards_drawn}`)
 
     .then((res) => {
-      console.log(res);
+      console.log(res.data.cards);
       deck_var.remaining = res.data.remaining;
-      owned_cards.value = res.data.cards;
-      console.log(owned_cards.value);
+
+      let data = res.data.cards;
+      if (owned_cards.value.length <= 9) {
+        for (const cards of data) {
+          owned_cards.value.push(cards);
+        }
+      } else {
+        toast.error("Only 10 cards allowed!", {
+          position: toast.POSITION.BOTTOM_CENTER,
+        });
+      }
     })
 
     .catch((res) => {
@@ -281,7 +308,7 @@ get_deck(tundra_deck);
     .cards {
       &__img {
         height: 200px;
-        margin-inline: 10px;
+        margin-inline: 5px;
 
         &:hover {
           transform: scale(1.1);
